@@ -59,7 +59,7 @@ jobs:
  
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@
+        uses: actions/checkout@v3
 
       - name: Calculate Version
         id: version
