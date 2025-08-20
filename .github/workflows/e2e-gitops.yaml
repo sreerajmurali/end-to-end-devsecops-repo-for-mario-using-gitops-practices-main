@@ -44,6 +44,9 @@ jobs:
         run: |
           docker build -t docker.io/${{ secrets.DOCKERHUB_USERNAME }}/supermariogitopsproject:${{ env.VERSION }} .
           docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/supermariogitopsproject:${{ env.VERSION }}
+      - name: Debug DockerHub username
+        run:echo "DockerHub Username: ${{ secrets.DOCKERHUB_USERNAME }}"
+
 
   run_container_image_scan_on_supermario_docker_image:
     runs-on: ubuntu-latest
