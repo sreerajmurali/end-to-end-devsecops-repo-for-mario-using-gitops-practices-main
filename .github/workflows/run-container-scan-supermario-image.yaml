@@ -5,9 +5,7 @@ name: "Run Container Scan on Super Mario Docker Image with Quality Gate"
 #     branches:
 #       - main
  
-# env:
-#   VERSION: $(( $(cat version.txt) + 1 ))
-  
+
 jobs:
   
   run_container_image_scan_on_supermario_docker_image:
