@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - master
-# env:
-#   VERSION: $(( $(cat version.txt) + 1 ))
+
 jobs:
 
   sonarqube_sast_scan:
