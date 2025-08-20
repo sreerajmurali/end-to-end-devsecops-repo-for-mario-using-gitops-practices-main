@@ -1,35 +1,42 @@
-name: "Run Container Scan on Super Mario Docker Image with Quality Gate"
- 
-# on:
-#   push:
-#     branches:
-#       - main
- 
+name: Run Container Scan for SuperMario Image
+
+on:
+  push:
+    branches:
+      - master
+
 env:
-  VERSION: $(( $(cat version.txt) + 1 ))
-  
+  VERSION: latest   # you can also use ${{ github.sha }} if you want per-commit tags
+
 jobs:
-  
-  run_container_image_scan_on_supermario_docker_image:
-    runs-on: ubuntu-latest	
- 
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
- 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-        
-      - name: Get Docker Image from Docker Hub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
         run: |
-          docker pull docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
-          docker save -o supermariolatestdockerimage.tar docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
-     
-      - name: Run Trivy vulnerability scanner in tarball mode
+          docker build -t docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }} .
+
+      - name: Push Docker image
+        run: |
+          docker push docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
+
+      - name: Debug VERSION
+        run: echo "VERSION=${{ env.VERSION }}"
+
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          # input: /github/workspace/supermariolatestdockerimage.tar
-          scan-type: image
-          image-ref: docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
-          exit-code: '1'
-          severity: 'CRITICAL,HIGH'
+           scan-type: image
+           image-ref: docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
+           exit-code: '1'
+           severity: 'CRITICAL,HIGH'
