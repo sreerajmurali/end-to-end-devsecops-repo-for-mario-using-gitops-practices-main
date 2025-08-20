@@ -1,4 +1,4 @@
-name: E2E GitOps Workflow
+name: End2End GitOps Workflow
 
 on:
   push:
