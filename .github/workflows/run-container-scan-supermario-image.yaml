@@ -1,42 +1,33 @@
-name: Run Container Scan for SuperMario Image
-
-on:
-  push:
-    branches:
-      - master
-
+name: "Run Container Scan on Super Mario Docker Image with Quality Gate"
+ 
+# on:
+#   push:
+#     branches:
+#       - main
+ 
 env:
-  VERSION: latest   # you can also use ${{ github.sha }} if you want per-commit tags
-
+  VERSION: $(( $(cat version.txt) + 1 ))
+  
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  
+  run_container_image_scan_on_supermario_docker_image:
+    runs-on: ubuntu-latest	
+ 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build Docker image
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+ 
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        
+      - name: Get Docker Image from Docker Hub
         run: |
-          docker build -t docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }} .
-
-      - name: Push Docker image
-        run: |
-          docker push docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
-
-      - name: Debug VERSION
-        run: echo "VERSION=${{ env.VERSION }}"
-
-      - name: Run Trivy vulnerability scanner
+          docker pull docker.io/raghuthesecurityexpert/supermariogitopsproject:${{ env.VERSION }}
+          docker save -o supermariolatestdockerimage.tar docker.io/raghuthesecurityexpert/supermariogitopsproject:${{ env.VERSION }}
+     
+      - name: Run Trivy vulnerability scanner in tarball mode
         uses: aquasecurity/trivy-action@master
         with:
-           scan-type: image
-           image-ref: docker.io/sreerajmurali/supermariogitopsproject:${{ env.VERSION }}
-           exit-code: '1'
-           severity: 'CRITICAL,HIGH'
+          input: /github/workspace/supermariolatestdockerimage.tar
+          exit-code: '1'
+          severity: 'CRITICAL,HIGH'
