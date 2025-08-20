@@ -5,8 +5,8 @@ on:
     branches:
       - master
  
-env:
-  VERSION: $(( $(cat version.txt) + 1 ))
+# env:
+#   VERSION: $(( $(cat version.txt) + 1 ))
   
 jobs:
  
