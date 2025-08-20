@@ -16,7 +16,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
- 
+     
+      - name: Calculate Version
+        id: version
+        run: |
+          VERSION=$(cat version.txt)
+          NEW_VERSION=$((VERSION + 1))
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
         
