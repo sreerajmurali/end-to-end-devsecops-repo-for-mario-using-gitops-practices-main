@@ -5,12 +5,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write   # Allow github-actions[bot] to push changes
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
