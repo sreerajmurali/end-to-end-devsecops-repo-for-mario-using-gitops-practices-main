@@ -76,7 +76,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         # continue-on-error: true
         with:
-          image-ref: docker.io/***/supermariogitopsproject:$(cat version.txt)
+          image-ref: docker.io/***/supermariogitopsproject:${{ env.VERSION }}
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
           
