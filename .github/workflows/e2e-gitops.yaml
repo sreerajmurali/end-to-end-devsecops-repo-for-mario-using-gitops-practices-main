@@ -1,6 +1,6 @@
 
 name: "Run SAST, Build and push supermario image, scan image, Update deployment and version txt files"
- 
+
 on:
   push:
     branches:
@@ -94,3 +94,4 @@ jobs:
           git add deployment.yaml version.txt
           git commit -m "Updated deployment yaml and version txt file with supermario image tag to ${CURRENT_VERSION}"
           git push
+          
