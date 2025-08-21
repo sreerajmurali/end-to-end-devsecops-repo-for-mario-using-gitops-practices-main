@@ -73,10 +73,10 @@ jobs:
 
       - name: Run Trivy vulnerability scanner 
         uses: aquasecurity/trivy-action@master
-        # continue-on-error: true
+        continue-on-error: true
         with:
           image-ref: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/supermariogitopsproject:${{ env.VERSION }}
-          exit-code: '0'
+          exit-code: '1'
           severity: 'CRITICAL,HIGH'
 
   update_k8s_yaml_version_file_with_latest_image_tag:
